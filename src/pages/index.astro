@@ -1,16 +1,72 @@
 ---
-
+import { GET } from "../pages/api/fetchdata";
+import {
+  FacebookShareButton,
+  HackerNewsShareButton,
+  LinkedInShareButton,
+  RedditShareButton,
+  TwitterShareButton,
+  SocialShare,
+} from "astro-social-share";
+const BUTTONS = [TwitterShareButton, FacebookShareButton];
+let response = await GET();
+const data = await response.json();
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <div class="h-screen flex flex-col items-center">
+      <h1 class="text-3xl font-bold mt-12 mb-12">Daily Joke</h1>
+      <button
+        id="joke-btn"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        What's for the day?
+      </button>
+
+      <div class="mt-12" id="joke-container"></div>
+      <SocialShare
+        buttons={BUTTONS}
+        description={data.joke}
+        via="akinyemi_t"
+        title="Joke of the day"
+      />
+
+      <button id="anotherJoke" class="mt-4">Another Joke</button>
+    </div>
+  </body>
 </html>
+
+<script define:vars={{ data }}>
+const jokeBTN = document.getElementById("joke-btn");
+const jokeContainer = document.getElementById("joke-container");
+const anotherJoke = document.getElementById("anotherJoke");
+
+// Display the initial joke when the page loads
+jokeContainer.innerHTML = data.joke;
+
+const fetchAndDisplayJoke = async () => {
+	try {
+		const response = await fetch("/api/data"); // Replace with your API endpoint
+		if (response.ok) {
+			const data_ = await response.json();
+			jokeContainer.innerHTML = data_.joke; // Display the fetched joke
+		} else {
+			console.error("Failed to fetch data from the API");
+		}
+	} catch (error) {
+		console.error("Error:", error);
+	}
+};
+
+jokeBTN.addEventListener("click", fetchAndDisplayJoke);
+
+anotherJoke.addEventListener("click", fetchAndDisplayJoke);
+</script>
