@@ -2,13 +2,11 @@
 import { GET } from "../pages/api/fetchdata";
 import {
   FacebookShareButton,
-  HackerNewsShareButton,
-  LinkedInShareButton,
-  RedditShareButton,
   TwitterShareButton,
   SocialShare,
 } from "astro-social-share";
-const BUTTONS = [TwitterShareButton, FacebookShareButton];
+const TwitterBUTTON = [TwitterShareButton];
+const FaceBookBTN = [FacebookShareButton];
 let response = await GET();
 const data = await response.json();
 ---
@@ -33,10 +31,17 @@ const data = await response.json();
 
       <div class="mt-12" id="joke-container"></div>
       <SocialShare
-        buttons={BUTTONS}
-        description={data.joke}
+        buttons={TwitterBUTTON}
+        description={data?.joke}
         via="akinyemi_t"
-        title="Joke of the day"
+        title={data.joke}
+      />
+
+      <SocialShare
+        buttons={FaceBookBTN}
+        description={data.joke}
+        via="Femi Akinyemi"
+        title={data?.joke}
       />
 
       <button id="anotherJoke" class="mt-4">Another Joke</button>
@@ -58,6 +63,7 @@ const fetchAndDisplayJoke = async () => {
 		if (response.ok) {
 			const data_ = await response.json();
 			jokeContainer.innerHTML = data_.joke; // Display the fetched joke
+			console.log(data_, "datatatat");
 		} else {
 			console.error("Failed to fetch data from the API");
 		}
