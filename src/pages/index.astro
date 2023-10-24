@@ -59,10 +59,10 @@ jokeContainer.innerHTML = data.joke;
 
 const fetchAndDisplayJoke = async () => {
 	try {
-		const response = await fetch("/api/data"); // Replace with your API endpoint
+		const response = await fetch("/api/data");
 		if (response.ok) {
 			const data_ = await response.json();
-			jokeContainer.innerHTML = data_.joke; // Display the fetched joke
+			jokeContainer.innerHTML = data_.joke;
 			console.log(data_, "datatatat");
 		} else {
 			console.error("Failed to fetch data from the API");
